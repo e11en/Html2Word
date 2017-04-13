@@ -14,6 +14,10 @@ namespace Html2Word.Controllers
 {
     public class DocumentController : ApiController
     {
+        /// <summary>
+        /// The entrance to the API to get the actual file.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public HttpResponseMessage Generate()
         {
