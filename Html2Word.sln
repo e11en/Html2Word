@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Html2Word", "Html2Word\Html2Word.csproj", "{25D0991D-6DBB-46D5-BCEF-27ECF24821C6}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DocMaker", "..\DocMaker", "{B29087B7-A121-4B52-895E-6255692FA629}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DocMaker", "..\DocMaker\", "{B29087B7-A121-4B52-895E-6255692FA629}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_59967"
@@ -24,6 +24,12 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "DocMaker", "..\DocMaker", "
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "59967"
 		SlnRelativePath = "..\DocMaker\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6B39AF4C-CE0E-4D03-8722-3A99457EC9D7}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
