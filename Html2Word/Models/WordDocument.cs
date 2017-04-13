@@ -71,6 +71,7 @@ namespace Html2Word.Models
         /// <returns></returns>
         private string GetBase64FromDataUri(string base64String)
         {
+            // Remove the 'data:image/png;base64,' bit from an image string.
             return base64String.Split(',')[1];
         }
     }
