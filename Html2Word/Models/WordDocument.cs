@@ -17,9 +17,9 @@ namespace Html2Word.Models
     {
         public string FilePath { get; set; }
 
-        public WordDocument()
+        public WordDocument(string documentName = "temp.doc")
         {
-            FilePath = HttpContext.Current.Server.MapPath("~/Temp/temp.doc");
+            FilePath = HttpContext.Current.Server.MapPath("~/Temp/" + documentName);
         }
 
         public void CreateDocument(string html)
