@@ -10,3 +10,6 @@ $http.post(baseUrl + "/api/document/generate", { Html : html })
         console.log("ERROR: " + response.statusText);
     });
 ```
+
+## Project that uses this API
+[DocMaker](https://github.com/e11en/DocMaker)
