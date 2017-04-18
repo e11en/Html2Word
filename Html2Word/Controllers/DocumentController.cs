@@ -26,9 +26,11 @@ namespace Html2Word.Controllers
                 var document = new WordDocument();
                 document.CreateDocument(data.Html);
 
+                var baseUrl = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+                var zipName = document.GUID + ".zip";
                 var resp = new HttpResponseMessage(HttpStatusCode.OK)
                 {
-                    Content = new StringContent(document.GUID + ".zip", System.Text.Encoding.UTF8, "text/plain")
+                    Content = new StringContent(baseUrl + "/Temp/" + zipName, System.Text.Encoding.UTF8, "text/plain")
                 };
                 return resp;
             }
