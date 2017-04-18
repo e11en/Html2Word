@@ -28,7 +28,11 @@ namespace Html2Word.Models
             // Write the doc file
             System.IO.File.WriteAllText(FilePath + "temp.doc", html);
 
+            // Create a zip file of the doc and image folder
             ZipFile.CreateFromDirectory(FilePath, HttpContext.Current.Server.MapPath("~/Temp/" + GUID + ".zip"));
+
+            // Remove folder
+            Directory.Delete(FilePath, true);
         }
 
         /// <summary>
