@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -43,6 +44,8 @@ namespace Html2Word.Models
                 //   .AppendPicture(p)
                 //   .Append(" don't you think so?");
 
+
+                // TODO: Can this be converted to an LINQ expression as well?
                 using (XmlReader reader = XmlReader.Create(new StringReader(html)))
                 {
                     reader.ReadStartElement("html");
@@ -61,8 +64,8 @@ namespace Html2Word.Models
 
                         if(el.Name.LocalName == "table")
                         {
-                            var table = document.AddTable(10, 2);
-                            document.InsertTable(GetTableByHtml(table, el.ToString()));
+
+                            document.InsertTable(GetTableByHtml(document, el.ToString()));
                         }
                         else
                         {
@@ -70,7 +73,7 @@ namespace Html2Word.Models
                             p.StyleName = SetStyleOfParagraphByElement(el.Name.LocalName);
                         }
                         
-                        Debug.WriteLine(String.Concat(el.Nodes()));
+                        //Debug.WriteLine(String.Concat(el.Nodes()));
                     }
 
                     reader.ReadEndElement();
@@ -134,10 +137,65 @@ namespace Html2Word.Models
             return base64String.Split(',')[1];
         }
 
-        private Table GetTableByHtml(Table table, string tableHtml)
+        /// <summary>
+        /// Gets the DocX table by HTML.
+        /// </summary>
+        /// <param name="document">The DocX document.</param>
+        /// <param name="tableHtml">The table HTML.</param>
+        /// <returns></returns>
+        private Table GetTableByHtml(DocX document, string tableHtml)
         {
+            var tableList = HtmlTableToList(tableHtml);
+            var table = document.AddTable(tableList.Count, 2);
+
+            var rowCount = 0;
+            foreach (var tr in tableList)
+            {
+                var dataCount = 0;
+                foreach (var td in tr)
+                {
+                    table.Rows[rowCount].Cells[dataCount].Paragraphs.First().Append(td);
+                    dataCount++;
+                }
+                rowCount++;
+            }
 
             return table;
+        }
+
+        /// <summary>
+        /// Turn a html table into a two dimensional List.
+        /// </summary>
+        /// <param name="html">The HTML.</param>
+        /// <returns></returns>
+        private List<List<string>> HtmlTableToList(string html)
+        {
+            var result = new List<List<string>>();
+
+            var doc = XDocument.Parse(html);
+            var rows = from @table in doc.Descendants("table")
+                       from row in @table.Descendants("tr")
+                       from data in row.Descendants("td")
+                        select new
+                        {
+                            Elements = data.Descendants()
+                        };
+
+
+            foreach (var row in rows)
+            {
+                var td = new List<string>();
+
+                foreach (var element in row.Elements)
+                {
+                    td.Add(element.ToString());
+                    Debug.WriteLine(element.ToString());
+                }
+
+                result.Add(td);
+            }
+
+            return result;
         }
     }
 }
