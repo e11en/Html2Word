@@ -1,25 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
-using System.Xml;
 using System.Xml.Linq;
+using System.IO.Compression;
+
 
 namespace Html2Word.Models
 {
     public class WordDocument
     {
         public string FilePath { get; set; }
+        public string GUID { get; set; }
 
-        public WordDocument(string documentName = "temp.doc")
+        public WordDocument()
         {
-            FilePath = HttpContext.Current.Server.MapPath("~/Temp/" + documentName);
+            GUID = Guid.NewGuid().GetHashCode().ToString();
+            FilePath = HttpContext.Current.Server.MapPath("~/Temp/" + GUID + "/");
         }
 
         public void CreateDocument(string html)
@@ -28,7 +26,9 @@ namespace Html2Word.Models
             html = ProcessImages(html);
 
             // Write the doc file
-            System.IO.File.WriteAllText(FilePath, html);
+            System.IO.File.WriteAllText(FilePath + "temp.doc", html);
+
+            ZipFile.CreateFromDirectory(FilePath, HttpContext.Current.Server.MapPath("~/Temp/" + GUID + ".zip"));
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Html2Word.Models
         /// </summary>
         /// <param name="html">The complete HTML.</param>
         /// <returns></returns>
-        private static string ProcessImages(string html)
+        private string ProcessImages(string html)
         {
             // Load the html as xml
             var xdoc = XDocument.Parse(html);
@@ -56,8 +56,8 @@ namespace Html2Word.Models
 
                 // Save image to the temp_files folder
                 var imageName = Guid.NewGuid().GetHashCode() + ".png";
-                System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~/Temp/temp_files"));
-                image.Save(HttpContext.Current.Server.MapPath("~/Temp/temp_files/") + imageName);
+                System.IO.Directory.CreateDirectory(FilePath + "temp_files");
+                image.Save(FilePath + "temp_files/" + imageName);
 
                 // Rename the src to the saved image filename
                 img.Attribute("src").Value = "./temp_files/" + imageName;

@@ -23,11 +23,16 @@ namespace Html2Word.Controllers
 
             try
             {
-                var document = new WordDocument(data.DocumentName);
+                var document = new WordDocument();
                 document.CreateDocument(data.Html);
-                return GetFile(document.FilePath);
+
+                var resp = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(document.GUID + ".zip", System.Text.Encoding.UTF8, "text/plain")
+                };
+                return resp;
             }
-            catch(ArgumentException ex)
+            catch (ArgumentException ex)
             {
                 return Request.CreateResponse(HttpStatusCode.BadRequest, ex.Message);
             }
@@ -57,7 +62,7 @@ namespace Html2Word.Controllers
     public class HtmlPost
     {
         public string Html { get; set; }
-        public string DocumentName { get; set; }
+        //public string DocumentName { get; set; }
 
     }
 }
