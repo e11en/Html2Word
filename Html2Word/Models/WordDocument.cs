@@ -56,7 +56,9 @@ namespace Html2Word.Models
                     {
                         if (reader.Name == "img")
                         {
-                            reader.Read();
+                            var img = (XElement)XNode.ReadFrom(reader);
+                            AddPictureToDocument(document, Base64ToMemoryStream(GetBase64FromDataUri(img.Attribute("src").Value)));
+                            //reader.Read();
                             // TODO: Add images
                         }
 
@@ -154,6 +156,7 @@ namespace Html2Word.Models
                 var dataCount = 0;
                 foreach (var td in tr)
                 {
+
                     table.Rows[rowCount].Cells[dataCount].Paragraphs.First().Append(td);
                     dataCount++;
                 }
@@ -196,6 +199,20 @@ namespace Html2Word.Models
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Adds the picture to document.
+        /// </summary>
+        /// <param name="document">The document.</param>
+        /// <param name="imageStream">The image stream.</param>
+        private void AddPictureToDocument(DocX document, Stream imageStream)
+        {
+            Image image = document.AddImage(imageStream);
+            Picture picture = image.CreatePicture();
+
+            var paragraph = document.InsertParagraph();
+            paragraph.AppendPicture(picture);
         }
     }
 }
