@@ -6,7 +6,6 @@ using System.Web;
 using System.Xml.Linq;
 using System.IO.Compression;
 
-
 namespace Html2Word.Models
 {
     public class WordDocument
