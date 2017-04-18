@@ -25,6 +25,7 @@ namespace Html2Word.Models
             html = ProcessImages(html);
 
             // Write the doc file
+            System.IO.Directory.CreateDirectory(FilePath);
             System.IO.File.WriteAllText(FilePath + "temp.doc", html);
 
             // Create a zip file of the doc and image folder
