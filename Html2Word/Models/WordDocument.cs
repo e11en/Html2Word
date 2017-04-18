@@ -19,15 +19,13 @@ namespace Html2Word.Models
 
         public WordDocument()
         {
-            FilePath = HttpContext.Current.Server.MapPath("~/Temp/temp.html");
+            FilePath = HttpContext.Current.Server.MapPath("~/Temp/temp.doc");
         }
 
         public void CreateDocument(string html)
         {
             html = ProcessImages(html);
             System.IO.File.WriteAllText(FilePath, html);
-            System.IO.File.Move(FilePath, HttpContext.Current.Server.MapPath("~/Temp/temp.doc"));
-            FilePath = HttpContext.Current.Server.MapPath("~/Temp/temp.doc");
         }
 
         private static string ProcessImages(string html)
