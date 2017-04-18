@@ -24,45 +24,48 @@ namespace Html2Word.Models
 
         public void CreateDocument(string html)
         {
+            // Save the images to a temp_files folder and replace image src
             html = ProcessImages(html);
+
+            // Write the doc file
             System.IO.File.WriteAllText(FilePath, html);
         }
 
+        /// <summary>
+        /// Extract the Base64 images from the HTML and save them in a temp_files folder
+        /// then point the src to the saved image.
+        /// </summary>
+        /// <param name="html">The complete HTML.</param>
+        /// <returns></returns>
         private static string ProcessImages(string html)
         {
-            //Load xml
-            XDocument xdoc = XDocument.Parse(html);
+            // Load the html as xml
+            var xdoc = XDocument.Parse(html);
 
-            //Run query
+            // Get all the images
             var images = from image in xdoc.Descendants("img")
                          where image.Attribute("src").Value.Contains("base64")
                         select image;
                          
 
-            //Loop through results
             foreach (var img in images)
             {
+                // Get Image object from image src
                 var base64 = GetBase64FromDataUri(img.Attribute("src").Value);
                 var image = Base64ToImage(base64);
+
+                // Save image to the temp_files folder
                 var imageName = Guid.NewGuid().GetHashCode() + ".png";
                 System.IO.Directory.CreateDirectory(HttpContext.Current.Server.MapPath("~/Temp/temp_files"));
                 image.Save(HttpContext.Current.Server.MapPath("~/Temp/temp_files/") + imageName);
+
+                // Rename the src to the saved image filename
                 img.Attribute("src").Value = "./temp_files/" + imageName;
             }
 
+            // Return the complete html string with new image names
             return xdoc.ToString();
         }
-
-        public static Stream GenerateStreamFromString(string s)
-        {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(s);
-            writer.Flush();
-            stream.Position = 0;
-            return stream;
-        }
-
 
         /// <summary>
         /// Get an Image object from a Base64 image string.
