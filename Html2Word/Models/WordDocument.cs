@@ -15,7 +15,7 @@ namespace Html2Word.Models
 
         public WordDocument()
         {
-            GUID = Guid.NewGuid().GetHashCode().ToString();
+            GUID = Guid.NewGuid().GetHashCode().ToString().Replace("-", "");
             FilePath = HttpContext.Current.Server.MapPath("~/Temp/" + GUID + "/");
         }
 
